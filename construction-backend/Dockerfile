@@ -1,4 +1,4 @@
-ARG NODE_IMAGE=node:20.15.1-alpine3.20
+ARG NODE_IMAGE=node:22.17.0-alpine
 
 FROM $NODE_IMAGE AS base
 WORKDIR /app
