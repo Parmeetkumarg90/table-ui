@@ -10,7 +10,7 @@ FROM base AS development
 COPY --chown=node:node package*.json ./
 COPY --chown=node:node . .
 RUN npm ci && npm cache clean --force
-RUN npm run build && npm prune --production
+RUN npm run build 
 
 FROM base AS production
 WORKDIR /app

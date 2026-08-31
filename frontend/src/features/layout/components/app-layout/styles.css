@@ -1,0 +1,44 @@
+.header {
+    height: 72;
+    padding: 11 16;
+    border-bottom: 2px solid #0277BD;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.menu-button {
+    width: 48;
+    height: 48;
+}
+
+.left-box,
+.right-box {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.menu-option {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.menu-option-button {
+    width: 30;
+    height: 30;
+}
+
+.right-box {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.text {
+    font-size: 18;
+    color: #0277BD;
+}
