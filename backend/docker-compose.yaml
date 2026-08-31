@@ -12,7 +12,6 @@ services:
     tty: true
     stdin_open: true
     env_file: .env
-    command: npm run start:dev
     ports:
       - '8002:8000'
     volumes:
