@@ -1,21 +1,21 @@
 import { ArrayMinSize, IsArray, IsEnum, IsIn, IsNotEmpty, IsOptional, IsString, ValidateNested } from "class-validator";
-import { UserCategory } from "src/domain/user/enum/user-category.enum";
+import { UserCategory } from "src/domain/reservation/enum/user-category.enum";
 import { plainToInstance, Transform, Type } from 'class-transformer';
-import { User } from "src/domain/user/user.entity";
+import { Reservation } from "src/domain/reservation/reservation.entity";
 
-const validUserFields: (keyof Partial<User>)[] = [
+const validReservationFields: (keyof Partial<Reservation>)[] = [
     'firstname',
     'lastname',
     'age',
     'category',
 ];
 
-export class ListUserSortFieldValidator {
+export class ListReservationSortFieldValidator {
     @IsString()
     @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
     @IsNotEmpty()
-    @IsIn(validUserFields)
-    fieldname!: keyof Partial<User>;
+    @IsIn(validReservationFields)
+    fieldname!: keyof Partial<Reservation>;
 
     @IsString()
     @Transform(({ value }) =>
@@ -26,7 +26,7 @@ export class ListUserSortFieldValidator {
     order!: "ASC" | "DESC";
 }
 
-export class ListUserParamsValidator {
+export class ListReservationParamsValidator {
     @IsOptional()
     @Type(() => Number)
     limit: number = 10;
@@ -85,9 +85,9 @@ export class ListUserParamsValidator {
         }
         if (Array.isArray(items)) {
             return items.map((item) =>
-                item instanceof ListUserSortFieldValidator
+                item instanceof ListReservationSortFieldValidator
                     ? item
-                    : plainToInstance(ListUserSortFieldValidator, item)
+                    : plainToInstance(ListReservationSortFieldValidator, item)
             );
         }
         return items;
@@ -95,6 +95,6 @@ export class ListUserParamsValidator {
     @IsArray()
     @ArrayMinSize(1)
     @ValidateNested({ each: true })
-    @Type(() => ListUserSortFieldValidator)
-    sort?: ListUserSortFieldValidator[];
+    @Type(() => ListReservationSortFieldValidator)
+    sort?: ListReservationSortFieldValidator[];
 }

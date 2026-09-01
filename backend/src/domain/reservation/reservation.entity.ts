@@ -2,7 +2,7 @@ import { defineEntity, p } from "@mikro-orm/core";
 import { randomUUID } from "crypto";
 import { UserCategory } from "./enum/user-category.enum";
 
-export class User {
+export class Reservation {
   id!: bigint;
   uuid: string = randomUUID();
   firstname!: string;
@@ -14,9 +14,9 @@ export class User {
   deleted_at?: Date;
 }
 
-const UserEntity = defineEntity<User>({
-  name: "user",
-  class: User,
+const ReservationEntity = defineEntity<Reservation>({
+  name: "reservation",
+  class: Reservation,
   properties: {
     id: p.bigint().autoincrement().primary().hidden(),
     uuid: p.uuid().unique().onCreate(randomUUID),
@@ -33,4 +33,4 @@ const UserEntity = defineEntity<User>({
   }
 });
 
-UserEntity.setClass(User)
+ReservationEntity.setClass(Reservation)

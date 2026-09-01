@@ -10,7 +10,7 @@ import {
     PURGE,
     REGISTER,
 } from "redux-persist";
-import userReducer from "@/store/features/user/user.slice"
+import reservationReducer from "@/store/features/reservation/reservation.slice"
 
 const createNoopStorage = () => {
     return {
@@ -32,13 +32,13 @@ const storage =
         : createNoopStorage();
 
 const rootReducer = combineReducers({
-    users: userReducer
+    reservation: reservationReducer
 });
 
 const persistConfig = {
     key: "root",
     storage,
-    blacklist: ['users']
+    blacklist: ['reservation']
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

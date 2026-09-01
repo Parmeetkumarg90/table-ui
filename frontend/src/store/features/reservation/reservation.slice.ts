@@ -1,26 +1,26 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { UserSliceInterface } from "./user.types";
-import { createUserService, listUserService } from "./user.service";
+import { ReservationSliceInterface } from "./reservation.types";
+import { createReservationService, listReservationService, } from "./reservation.service";
 import { enqueueSnackbar } from "notistack";
 
-const initialState: UserSliceInterface = {
+const initialState: ReservationSliceInterface = {
     limit: 10,
     total: 0,
     page: 0,
-    users: [],
+    reservations: [],
     loading: false,
 }
 
-const userSlice = createSlice({
-    name: "user",
+const reservationSlice = createSlice({
+    name: "reservation",
     initialState,
     reducers: {},
     extraReducers(builder) {
-        builder.addAsyncThunk(createUserService, {
+        builder.addAsyncThunk(createReservationService, {
             fulfilled(state, _) {
                 enqueueSnackbar({
                     variant: "success",
-                    message: "User created success"
+                    message: "Reservation created success"
                 })
                 state.loading = false
             },
@@ -31,18 +31,18 @@ const userSlice = createSlice({
                 state.loading = false
                 enqueueSnackbar({
                     variant: "error",
-                    message: "User creation failed"
+                    message: "Reservation creation failed"
                 })
             }
         });
 
-        builder.addAsyncThunk(listUserService, {
+        builder.addAsyncThunk(listReservationService, {
             fulfilled(state, action) {
-                const { payload, userDetail } = action.payload;
-                state.limit = userDetail.limit;
-                state.total = userDetail.total;
-                state.page = userDetail.page;
-                state.users = userDetail.users;
+                const { payload, reservationDetail } = action.payload;
+                state.limit = reservationDetail.limit;
+                state.total = reservationDetail.total;
+                state.page = reservationDetail.page;
+                state.reservations = reservationDetail.reservations;
                 state.loading = false;
                 state.search = payload.search;
                 state.sort = payload.sort;
@@ -57,4 +57,4 @@ const userSlice = createSlice({
     },
 });
 
-export default userSlice.reducer
+export default reservationSlice.reducer

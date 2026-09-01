@@ -1,8 +1,8 @@
 import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, Max, Min } from "class-validator";
-import { UserCategory } from "src/domain/user/enum/user-category.enum";
+import { UserCategory } from "src/domain/reservation/enum/user-category.enum";
 import { Transform } from 'class-transformer';
 
-export class CreateUserBodyValidator {
+export class CreateReservationBodyValidator {
     @IsString()
     @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
     @IsNotEmpty()

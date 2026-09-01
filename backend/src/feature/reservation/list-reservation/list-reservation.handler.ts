@@ -1,18 +1,18 @@
 import { Injectable } from "@nestjs/common";
-import { UserRepository } from "src/infrastructure/repository/user.repository";
-import { ListUserParamQuery } from "./list-user.query";
-import { User } from "src/domain/user/user.entity";
+import { ReservationRepository, } from "src/infrastructure/repository/reservation.repository";
+import { ListReservationParamQuery, } from "./list-reservation.query";
+import { Reservation, } from "src/domain/reservation/reservation.entity";
 import { FilterQuery, FindOptions } from "@mikro-orm/core";
 
 @Injectable()
-export class ListUserHandler {
-    constructor(private readonly repository: UserRepository) { }
+export class ListReservationHandler {
+    constructor(private readonly repository: ReservationRepository) { }
 
-    async handle(command: ListUserParamQuery) {
+    async handle(command: ListReservationParamQuery) {
         const { queryParams: { limit, page, search, categories, sort } } = command;
 
-        const condition: FilterQuery<User> = {}
-        const options: FindOptions<User> = {
+        const condition: FilterQuery<Reservation> = {}
+        const options: FindOptions<Reservation> = {
             limit: limit,
             offset: (page - 1) * limit
         }
@@ -36,8 +36,8 @@ export class ListUserHandler {
             options.orderBy = orderBy
         }
 
-        const [users, total] = await this.repository.findAndCount(condition, options)
+        const [reservations, total] = await this.repository.findAndCount(condition, options)
 
-        return { total, limit, page, users }
+        return { total, limit, page, reservations }
     }
 }

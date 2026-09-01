@@ -1,6 +1,6 @@
-import { UserCategory } from "@/features/user/enum/user-category";
+import { UserCategory } from "@/features/reservation/enum/user-category";
 
-export interface UserInterface {
+export interface ReservationInterface {
     uuid: string,
     firstname: string,
     lastname: string,
