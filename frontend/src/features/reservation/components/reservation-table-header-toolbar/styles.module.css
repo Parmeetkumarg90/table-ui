@@ -43,11 +43,17 @@
 }
 
 .select {
-    width: 86px;
+    min-width: 96px;
+    width: auto;
+    max-width: 220px;
     height: 32px;
     border-radius: 16px;
     background: #EEEEEE;
     color: #757575;
+}
+
+.selectOption {
+    font-size: 14px;
 }
 
 .select :global(.MuiOutlinedInput-notchedOutline) {
@@ -65,7 +71,7 @@
 .select :global(.MuiSelect-select) {
     outline: none !important;
     color: #757575;
-    font-size: 14px;
+    font-size: 12px;
     padding: 4px 24px 4px 12px !important;
     display: flex;
     align-items: center;
