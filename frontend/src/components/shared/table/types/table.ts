@@ -1,30 +1,18 @@
-
-interface HeadCell {
-    id: keyof Data;
+export interface HeadCell<T> {
+    id: keyof T;
     label: string;
-    numeric: boolean;
-}
-interface Data {
-    id: number;
-    calories: number;
-    carbs: number;
-    fat: number;
-    name: string;
-    protein: number;
-}
-
-type Order = 'asc' | 'desc';
-
-interface EnhancedTableProps {
-    numSelected: number;
-    onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Data) => void;
-    onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
     order: Order;
-    orderBy: string;
-    rowCount: number;
+    canSort: boolean
 }
 
+export type Order = 'asc' | 'desc';
 
-interface EnhancedTableToolbarProps {
-    numSelected: number;
+export interface EnhancedTableProps<T> {
+    onRequestSort: (event: React.MouseEvent<unknown>, property: keyof T) => void;
+    order: Order;
+    orderBy: keyof T;
+    headCells: readonly HeadCell<T>[]
+}
+
+export interface EnhancedTableToolbarProps {
 }

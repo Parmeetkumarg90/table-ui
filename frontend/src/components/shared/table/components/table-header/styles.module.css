@@ -1,0 +1,6 @@
+.tableHeaderRow {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    background: #EEEEEE;
+    width: 100%;
+}

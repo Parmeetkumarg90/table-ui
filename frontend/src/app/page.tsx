@@ -4,7 +4,7 @@ import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import AddIcon from '@mui/icons-material/Add';
-import EnhancedTable from "@/components/shared/table/table";
+import { UserListTable } from "@/features/user/components/user-list-table/user-list-table";
 
 export default function Home() {
   return (
@@ -16,9 +16,7 @@ export default function Home() {
           <Typography className={styles.headerButtonLabel}>ADD RESERVATION</Typography>
         </Button>
       </Box>
-      <Card className={styles.listLayout}>
-        <EnhancedTable  />
-      </Card>
+      <UserListTable />
     </Card>
   );
 }

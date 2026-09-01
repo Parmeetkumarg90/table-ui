@@ -1,0 +1,18 @@
+.layout {
+    display: flex;
+    flex-direction: column;
+    height: 740px;
+    padding: 24px;
+    gap: 24;
+    border-radius: 8;
+    background: #ffffff;
+}
+
+.row,
+.evenRows {
+    cursor: pointer;
+}
+
+.evenRows {
+    background: #F7F9FC;
+}

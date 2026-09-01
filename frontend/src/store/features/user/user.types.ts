@@ -1,9 +1,8 @@
+import { Order } from "@/components/shared/table/types/table";
 import { UserCategory } from "@/features/user/enum/user-category";
 import { UserInterface } from "@/features/user/types/user.types";
 
-export interface UserSliceInterface {
-    page: number;
-    limit: number;
+export interface UserSliceInterface extends ListUserPayloadInterface {
     total: number;
     loading: boolean;
     users: UserInterface[];
@@ -16,12 +15,13 @@ export interface CreateUserPayloadInterface {
     category: UserCategory
 }
 
+export type SortField = 'firstname' | 'lastname' | 'age' | 'category';
+
 export interface ListUserPayloadInterface {
     search?: string;
     page: number;
     limit: number;
-    sort: {
-        fieldname: 'firstname' | 'lastname' | 'age' | 'category';
-        order: 'asc' | 'desc'
+    sort?: {
+        [key in SortField]: Order
     }
 }
