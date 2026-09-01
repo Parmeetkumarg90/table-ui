@@ -17,11 +17,12 @@ interface EnhancedTableComponentProps<T> {
   rows: T[];
   toolbar?: React.ReactNode;
   handleRequestSort: (fieldname: keyof T) => void;
-  totalRows: number;
-  page: number;
-  rowsPerPage: number;
-  onPageChange: (newPage: number) => void;
-  onRowsPerPageChange: (newRowsPerPage: number) => void;
+  totalRows?: number;
+  page?: number;
+  rowsPerPage?: number;
+  onPageChange?: (newPage: number) => void;
+  onRowsPerPageChange?: (newRowsPerPage: number) => void;
+  showPaginationControl?: boolean;
 }
 
 const EnhancedTable = <T,>({
@@ -34,19 +35,31 @@ const EnhancedTable = <T,>({
   rowsPerPage,
   onPageChange,
   onRowsPerPageChange,
+  showPaginationControl = true,
 }: EnhancedTableComponentProps<T>) => {
+  const refinedRows =
+    page !== undefined && rowsPerPage !== undefined
+      ? rows.slice(page * rowsPerPage, (page + 1) * rowsPerPage)
+      : rows;
+
   return (
     <Box className={styles.layout}>
       {toolbar}
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <TableContainer>
+        <TableContainer
+          className={
+            showPaginationControl
+              ? styles.listContainer
+              : styles.autoHeightContainer
+          }
+        >
           <Table aria-labelledby="tableTitle">
             <EnhancedTableHead
               onRequestSort={handleRequestSort}
               headCells={headCells}
             />
             <TableBody>
-              {rows.map((row, index) => {
+              {refinedRows.map((row, index) => {
                 const rowKey = (row as any)?.uuid ?? (row as any)?.id ?? index;
                 return (
                   <TableRow
@@ -67,17 +80,19 @@ const EnhancedTable = <T,>({
             </TableBody>
           </Table>
         </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={totalRows}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={(_, newPage) => onPageChange(newPage)}
-          onRowsPerPageChange={(event) =>
-            onRowsPerPageChange(parseInt(event.target.value, 10))
-          }
-        />
+        {showPaginationControl && (
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={totalRows ?? 0}
+            rowsPerPage={rowsPerPage ?? 0}
+            page={page ?? 0}
+            onPageChange={(_, newPage) => onPageChange?.(newPage)}
+            onRowsPerPageChange={(event) =>
+              onRowsPerPageChange?.(parseInt(event.target.value, 10))
+            }
+          />
+        )}
       </Paper>
     </Box>
   );

@@ -13,12 +13,16 @@ import { useSelector } from "react-redux";
 import { ReservationInterface } from "../../types/reservation.types";
 import { UserCategory } from "../../enum/user-category";
 import { ReservationEnhancedTableToolbar } from "../reservation-table-header-toolbar/table-header-toolbar";
+import { InfiniteScrollWrapper } from "@/components/shared/infinite-scroll/infinite-scroll";
+import { useWindowDimension } from "@/features/window/hook/use-dimension";
 
 const ReservationListTable = () => {
   const reservationListDetail = useSelector(
     (state: RootState) => state.reservation,
   );
   const dispatch = useAppDispatch();
+  const { windowWidth } = useWindowDimension();
+  const doInfiniteScroll = windowWidth < 768;
 
   useEffect(() => {
     if (
@@ -38,6 +42,9 @@ const ReservationListTable = () => {
   }, [reservationListDetail.reservations.length, reservationListDetail.page]);
 
   const onPageChange = (newPage: number) => {
+    if (reservationListDetail.loading) {
+      return;
+    }
     const { reservations, total, loading, ...previousFilters } =
       reservationListDetail;
     dispatch(
@@ -140,7 +147,47 @@ const ReservationListTable = () => {
     dispatch(listReservationService(filter));
   };
 
-  return (
+  const fetchMore = () => {
+    if (
+      reservationListDetail.loading ||
+      reservationListDetail.reservations.length >= reservationListDetail.total
+    ) {
+      return;
+    }
+    const { reservations, total, loading, ...previousFilters } =
+      reservationListDetail;
+    dispatch(
+      listReservationService({
+        ...previousFilters,
+        limit: reservationListDetail.limit || 10,
+        page: reservationListDetail.page + 1,
+      }),
+    );
+  };
+
+  return doInfiniteScroll ? (
+    <InfiniteScrollWrapper
+      fetchMore={fetchMore}
+      hasMore={
+        reservationListDetail.reservations.length < reservationListDetail.total
+      }
+      loading={reservationListDetail.loading}
+      totalLength={reservationListDetail.reservations.length}
+    >
+      <EnhancedTable
+        headCells={headCells}
+        rows={rows}
+        handleRequestSort={handleRequestSort}
+        toolbar={
+          <ReservationEnhancedTableToolbar
+            onOptionSelect={onCategoryChange}
+            onSearch={onSearch}
+          />
+        }
+        showPaginationControl={false}
+      />
+    </InfiniteScrollWrapper>
+  ) : (
     <EnhancedTable
       headCells={headCells}
       rows={rows}
