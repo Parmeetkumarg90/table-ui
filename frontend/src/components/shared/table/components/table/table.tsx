@@ -87,7 +87,7 @@ const EnhancedTable = <T,>({
             count={totalRows ?? 0}
             rowsPerPage={rowsPerPage ?? 0}
             page={page ?? 0}
-            onPageChange={(_, newPage) => onPageChange?.(newPage)}
+            onPageChange={(_, newPage) => onPageChange?.(newPage + 1)}
             onRowsPerPageChange={(event) =>
               onRowsPerPageChange?.(parseInt(event.target.value, 10))
             }
