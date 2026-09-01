@@ -29,7 +29,7 @@ const ReservationNavbar = () => {
                 </Button>
             </Box>
             <Modal open={showForm} onClose={onFormClose} className={styles.modal}>
-                <ReservationCreationFormComponent />
+                <ReservationCreationFormComponent onClose={onFormClose} />
             </Modal>
         </>
     )
