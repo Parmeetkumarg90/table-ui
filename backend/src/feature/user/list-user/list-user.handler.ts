@@ -36,8 +36,8 @@ export class ListUserHandler {
             options.orderBy = orderBy
         }
 
-        const users = await this.repository.find(condition, options)
+        const [users, total] = await this.repository.findAndCount(condition, options)
 
-        return users
+        return { total, limit, page, users }
     }
 }
