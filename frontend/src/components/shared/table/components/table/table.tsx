@@ -12,36 +12,29 @@ import styles from "./styles.module.css";
 import { HeadCell } from "../../types/table";
 import { EnhancedTableHead } from "../table-header/table-header";
 
+interface EnhancedTableComponentProps<T> {
+  headCells: HeadCell<T>[];
+  rows: T[];
+  toolbar?: React.ReactNode;
+  handleRequestSort: (fieldname: keyof T) => void;
+  totalRows: number;
+  page: number;
+  rowsPerPage: number;
+  onPageChange: (newPage: number) => void;
+  onRowsPerPageChange: (newRowsPerPage: number) => void;
+}
+
 const EnhancedTable = <T,>({
   headCells,
   rows,
   toolbar,
   handleRequestSort,
-}: {
-  headCells: HeadCell<T>[];
-  rows: T[];
-  toolbar?: React.ReactNode;
-  handleRequestSort: (fieldname: keyof T) => void;
-}) => {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
-  const handleChangePage = (_: unknown, newPage: number) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const visibleRows = React.useMemo(
-    () => [...rows].slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [rows, page, rowsPerPage],
-  );
-
+  totalRows,
+  page,
+  rowsPerPage,
+  onPageChange,
+  onRowsPerPageChange,
+}: EnhancedTableComponentProps<T>) => {
   return (
     <Box className={styles.layout}>
       {toolbar}
@@ -53,7 +46,7 @@ const EnhancedTable = <T,>({
               headCells={headCells}
             />
             <TableBody>
-              {visibleRows.map((row, index) => {
+              {rows.map((row, index) => {
                 const rowKey = (row as any)?.uuid ?? (row as any)?.id ?? index;
                 return (
                   <TableRow
@@ -77,11 +70,13 @@ const EnhancedTable = <T,>({
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows.length}
+          count={totalRows}
           rowsPerPage={rowsPerPage}
           page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
+          onPageChange={(_, newPage) => onPageChange(newPage)}
+          onRowsPerPageChange={(event) =>
+            onRowsPerPageChange(parseInt(event.target.value, 10))
+          }
         />
       </Paper>
     </Box>

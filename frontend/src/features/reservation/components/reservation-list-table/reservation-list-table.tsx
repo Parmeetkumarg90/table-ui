@@ -25,14 +25,41 @@ const ReservationListTable = () => {
       reservationListDetail.reservations.length === 0 &&
       reservationListDetail.page === 0
     ) {
+      const { reservations, total, loading, ...previousFilters } =
+        reservationListDetail;
       dispatch(
         listReservationService({
-          limit: reservationListDetail.limit,
-          page: reservationListDetail.page + 1,
+          ...previousFilters,
+          limit: reservationListDetail.limit || 5,
+          page: 1,
         }),
       );
     }
   }, [reservationListDetail.reservations.length, reservationListDetail.page]);
+
+  const onPageChange = (newPage: number) => {
+    const { reservations, total, loading, ...previousFilters } =
+      reservationListDetail;
+    dispatch(
+      listReservationService({
+        ...previousFilters,
+        limit: reservationListDetail.limit,
+        page: newPage + 1,
+      }),
+    );
+  };
+
+  const onRowsPerPageChange = (newLimit: number) => {
+    const { reservations, total, loading, ...previousFilters } =
+      reservationListDetail;
+    dispatch(
+      listReservationService({
+        ...previousFilters,
+        limit: newLimit,
+        page: 1,
+      }),
+    );
+  };
 
   const columnFields: (keyof ReservationInterface)[] = [
     "firstname",
@@ -53,6 +80,14 @@ const ReservationListTable = () => {
         (reservationListDetail.sort?.[fieldname as SortField] as Order) ??
         undefined,
       canSort: !(fieldname.endsWith("at") || fieldname.endsWith("ategory")),
+    }),
+  );
+
+  const rows = (reservationListDetail.reservations ?? []).map(
+    (reservation) => ({
+      ...reservation,
+      created_at: new Date(reservation.created_at).toLocaleString(),
+      updated_at: new Date(reservation.updated_at).toLocaleString(),
     }),
   );
 
@@ -87,6 +122,7 @@ const ReservationListTable = () => {
     const filter: ListReservationPayloadInterface = {
       ...previousFilters,
       search: value || undefined,
+      page: 1,
     };
 
     dispatch(listReservationService(filter));
@@ -98,6 +134,7 @@ const ReservationListTable = () => {
     const filter: ListReservationPayloadInterface = {
       ...previousFilters,
       categories,
+      page: 1,
     };
 
     dispatch(listReservationService(filter));
@@ -106,7 +143,7 @@ const ReservationListTable = () => {
   return (
     <EnhancedTable
       headCells={headCells}
-      rows={reservationListDetail.reservations ?? []}
+      rows={rows}
       handleRequestSort={handleRequestSort}
       toolbar={
         <ReservationEnhancedTableToolbar
@@ -114,6 +151,11 @@ const ReservationListTable = () => {
           onSearch={onSearch}
         />
       }
+      totalRows={reservationListDetail.total}
+      page={Math.max(0, reservationListDetail.page - 1)}
+      rowsPerPage={reservationListDetail.limit || 5}
+      onPageChange={onPageChange}
+      onRowsPerPageChange={onRowsPerPageChange}
     />
   );
 };
