@@ -51,7 +51,7 @@ const ReservationListTable = () => {
       listReservationService({
         ...previousFilters,
         limit: reservationListDetail.limit,
-        page: newPage + 1,
+        page: newPage,
       }),
     );
   };
