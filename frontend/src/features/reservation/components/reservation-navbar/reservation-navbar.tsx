@@ -7,8 +7,6 @@ import AddIcon from "@mui/icons-material/Add";
 import Modal from "@mui/material/Modal";
 import { ReservationCreationFormComponent } from "@/features/reservation/components/reservation-creation-form/reservation-creation-form";
 import { useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store/store";
 
 const ReservationNavbar = () => {
   const [showForm, setShowForm] = useState<boolean>(false);

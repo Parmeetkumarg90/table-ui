@@ -126,6 +126,10 @@ const ReservationListTable = () => {
   const onSearch = (value: string) => {
     const { reservations, total, loading, ...previousFilters } =
       reservationListDetail;
+    if (previousFilters.search?.trim() === value.trim()) {
+      return;
+    }
+
     const filter: ListReservationPayloadInterface = {
       ...previousFilters,
       search: value || undefined,

@@ -1,4 +1,3 @@
-"use client";
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
@@ -13,6 +12,8 @@ import { HeadCell } from "../../types/table";
 import { EnhancedTableHead } from "../table-header/table-header";
 import Tooltip from "@mui/material/Tooltip";
 import CircularProgress from "@mui/material/CircularProgress";
+import Image from "next/image";
+import Typography from "@mui/material/Typography";
 
 interface EnhancedTableComponentProps<T> {
   headCells: HeadCell<T>[];
@@ -42,14 +43,16 @@ const EnhancedTable = <T,>({
   loading = false,
 }: EnhancedTableComponentProps<T>) => {
   const refinedRows =
-    page !== undefined && rowsPerPage !== undefined
+    rows.length > (rowsPerPage ?? 0) &&
+    page !== undefined &&
+    rowsPerPage !== undefined
       ? rows.slice(page * rowsPerPage, (page + 1) * rowsPerPage)
       : rows;
 
   return (
     <Box className={styles.layout}>
       {toolbar}
-      <Paper sx={{ width: "100%", mb: 2 }}>
+      <Paper className={styles.tablePaper}>
         <TableContainer
           className={
             showPaginationControl
@@ -80,7 +83,7 @@ const EnhancedTable = <T,>({
                           key={String(headCell.id)}
                           title={showTooltip ? cellValue : ""}
                         >
-                          <TableCell align="left">
+                          <TableCell align="left" className={styles.cell}>
                             {cellValue.slice(0, 6)}
                             {showTooltip ? "..." : ""}
                           </TableCell>
@@ -92,7 +95,7 @@ const EnhancedTable = <T,>({
               })}
             </TableBody>
           </Table>
-          {loading && (
+          {(loading || refinedRows.length === 0) && (
             <Box
               className={
                 refinedRows.length > 0
@@ -100,12 +103,26 @@ const EnhancedTable = <T,>({
                   : styles.fullHeightLoader
               }
             >
-              <CircularProgress />
+              {loading && <CircularProgress />}
+              {refinedRows.length === 0 && (
+                <Box className={styles.noReservationContainer}>
+                  <Image
+                    src={"/reservations/no-reservation.png"}
+                    alt="No reservations"
+                    width={`${400}`}
+                    height={`${400}`}
+                  />
+                  <Typography>
+                    No results found. Try changing your filters.
+                  </Typography>
+                </Box>
+              )}
             </Box>
           )}
         </TableContainer>
         {showPaginationControl && (
           <TablePagination
+            className={styles.pagination}
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
             count={totalRows ?? 0}

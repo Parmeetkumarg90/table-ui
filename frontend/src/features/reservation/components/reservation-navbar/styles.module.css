@@ -5,19 +5,19 @@
 }
 
 .headerText {
-    font-size: 22;
+    font-size: 22px;
     font-weight: 600;
 }
 
 .headerButton {
-    width: 180;
-    height: 36;
-    padding: 6;
+    width: 180px;
+    height: 36px;
+    padding: 6px;
     background: #01579B;
 }
 
 .headerButtonLabel {
-    font-size: 14;
+    font-size: 14px;
 }
 
 .modal {

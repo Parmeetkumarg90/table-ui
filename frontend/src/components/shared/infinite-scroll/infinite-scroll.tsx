@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
+import styles from "./styles.module.css";
 
 interface InfiniteScrollWrapperProps {
   totalLength: number;
@@ -29,14 +30,7 @@ const InfiniteScrollWrapper = ({
       loader={
         loading
           ? (loader ?? (
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  p: 2,
-                }}
-              >
+              <Box className={styles.loader}>
                 <CircularProgress size={24} />
               </Box>
             ))

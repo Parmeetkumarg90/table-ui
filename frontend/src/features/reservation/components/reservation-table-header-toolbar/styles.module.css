@@ -1,88 +1,76 @@
 .toolbar {
-    width: 100%;
-    min-height: 40px;
-    max-height: 40px;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    padding: 0;
-    gap: 8px;
+  width: 100%;
+  min-height: 40px;
+  max-height: 40px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  padding: 0;
+  gap: 8px;
 }
 
 .inputField {
-    width: 300px;
-    height: 40px;
-    color: #757575;
-    border-radius: 4px;
-    padding: 12px 16px;
+  width: 300px;
+  height: 40px;
+  color: #757575;
+  border-radius: 4px;
+  padding: 12px 16px;
 }
 
 .inputField :global(.MuiOutlinedInput-notchedOutline) {
-    border-color: #757575;
+  border-color: #757575;
 }
 
 .inputField:hover :global(.MuiOutlinedInput-notchedOutline) {
-    border-color: #757575;
+  border-color: #757575;
 }
 
 .inputField:global(.Mui-focused) :global(.MuiOutlinedInput-notchedOutline) {
-    border-color: #757575;
-    border-width: 1px;
+  border-color: #757575;
+  border-width: 1px;
 }
 
 .inputField input {
-    color: #757575;
+  color: #757575;
 }
 
 .inputField input::placeholder {
-    color: #757575;
-    opacity: 1;
+  color: #757575;
+  opacity: 1;
 }
 
 .inputField :global(.MuiSvgIcon-root) {
-    color: #757575;
+  color: #757575;
 }
 
 .select {
-    min-width: 96px;
-    width: auto;
-    max-width: 220px;
-    height: 32px;
-    border-radius: 16px;
-    background: #EEEEEE;
-    color: #757575;
+  min-width: 96px;
+  width: auto;
+  max-width: 220px;
+  height: 32px;
+  border-radius: 16px;
+  background: #eeeeee;
+  color: #757575;
 }
 
 .selectOption {
-    font-size: 14px;
+  width: 184px;
+  font-size: 14px;
+  text-transform: capitalize;
 }
 
 .select :global(.MuiOutlinedInput-notchedOutline) {
-    border: none !important;
-}
-
-.select:hover :global(.MuiOutlinedInput-notchedOutline) {
-    border: none !important;
-}
-
-.select:global(.Mui-focused) :global(.MuiOutlinedInput-notchedOutline) {
-    border: none !important;
+  border: none !important;
 }
 
 .select :global(.MuiSelect-select) {
-    outline: none !important;
-    color: #757575;
-    font-size: 12px;
-    padding: 4px 24px 4px 12px !important;
-    display: flex;
-    align-items: center;
+  text-transform: capitalize;
 }
 
-.select :global(.MuiSelect-select:focus) {
-    background-color: transparent;
-    outline: none !important;
+.selectMenuPaper {
+  background-color: #fff !important;
 }
 
-.select :global(.MuiSelect-icon) {
-    color: #757575;
+.selectMenuPaper :global(.MuiList-root) {
+  padding: 0 !important;
 }

@@ -20,10 +20,27 @@ export class ListReservationHandler {
     };
 
     if (search) {
-      condition.$or = [
-        { firstname: { $ilike: `%${search}%` } },
-        { lastname: { $ilike: `%${search}%` } },
-      ];
+      const searchParts = search.trim().split(/\s+/);
+
+      if (searchParts.length >= 2) {
+        const [first, last] = searchParts;
+
+        condition.$or = [
+          {
+            firstname: { $ilike: `%${first}%` },
+            lastname: { $ilike: `%${last}%` },
+          },
+          {
+            firstname: { $ilike: `%${last}%` },
+            lastname: { $ilike: `%${first}%` },
+          },
+        ];
+      } else {
+        condition.$or = [
+          { firstname: { $ilike: `%${search}%` } },
+          { lastname: { $ilike: `%${search}%` } },
+        ];
+      }
     }
 
     if (categories && categories.length > 0) {
