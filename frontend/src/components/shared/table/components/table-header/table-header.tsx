@@ -21,8 +21,17 @@ function EnhancedTableHead<T>(props: EnhancedTableProps<T>) {
             {headCell.canSort ? (
               <TableSortLabel
                 active={headCell.order !== undefined ? true : false}
+                hideSortIcon={false}
                 direction={headCell.order === "asc" ? "asc" : "desc"}
                 onClick={createSortHandler(headCell.id)}
+                sx={{
+                  "& .MuiTableSortLabel-icon": {
+                    opacity: headCell.order === undefined ? 0.3 : 1,
+                  },
+                  "&:hover .MuiTableSortLabel-icon": {
+                    opacity: 0.7,
+                  },
+                }}
               >
                 {headCell.label}
               </TableSortLabel>

@@ -55,6 +55,7 @@ export class ListReservationHandler {
       });
       options.orderBy = orderBy;
     }
+    options.orderBy = { updated_at: 'DESC', ...options.orderBy };
 
     const [reservations, total] = await this.repository.findAndCount(
       condition,
