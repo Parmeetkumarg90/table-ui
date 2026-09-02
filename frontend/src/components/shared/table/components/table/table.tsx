@@ -12,6 +12,7 @@ import styles from "./styles.module.css";
 import { HeadCell } from "../../types/table";
 import { EnhancedTableHead } from "../table-header/table-header";
 import Tooltip from "@mui/material/Tooltip";
+import CircularProgress from "@mui/material/CircularProgress";
 
 interface EnhancedTableComponentProps<T> {
   headCells: HeadCell<T>[];
@@ -24,6 +25,7 @@ interface EnhancedTableComponentProps<T> {
   onPageChange?: (newPage: number) => void;
   onRowsPerPageChange?: (newRowsPerPage: number) => void;
   showPaginationControl?: boolean;
+  loading: boolean;
 }
 
 const EnhancedTable = <T,>({
@@ -37,6 +39,7 @@ const EnhancedTable = <T,>({
   onPageChange,
   onRowsPerPageChange,
   showPaginationControl = true,
+  loading = false,
 }: EnhancedTableComponentProps<T>) => {
   const refinedRows =
     page !== undefined && rowsPerPage !== undefined
@@ -65,7 +68,6 @@ const EnhancedTable = <T,>({
                 return (
                   <TableRow
                     hover
-                    role="checkbox"
                     tabIndex={-1}
                     key={String(rowKey)}
                     className={index % 2 === 0 ? styles.evenRows : styles.row}
@@ -90,6 +92,17 @@ const EnhancedTable = <T,>({
               })}
             </TableBody>
           </Table>
+          {loading && (
+            <Box
+              className={
+                refinedRows.length > 0
+                  ? styles.loaderBox
+                  : styles.fullHeightLoader
+              }
+            >
+              <CircularProgress />
+            </Box>
+          )}
         </TableContainer>
         {showPaginationControl && (
           <TablePagination

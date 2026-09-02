@@ -27,18 +27,20 @@ const InfiniteScrollWrapper = ({
       dataLength={totalLength}
       hasMore={hasMore}
       loader={
-        loader ?? (
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              p: 2,
-            }}
-          >
-            <CircularProgress size={24} />
-          </Box>
-        )
+        loading
+          ? (loader ?? (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  p: 2,
+                }}
+              >
+                <CircularProgress size={24} />
+              </Box>
+            ))
+          : undefined
       }
       next={fetchMore}
       height={height}

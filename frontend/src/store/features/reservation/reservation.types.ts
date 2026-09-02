@@ -4,6 +4,7 @@ import { ReservationInterface } from "@/features/reservation/types/reservation.t
 
 export interface ReservationSliceInterface extends ListReservationPayloadInterface {
   total: number;
+  creatingUser: boolean;
   loading: boolean;
   reservations: ReservationInterface[];
 }

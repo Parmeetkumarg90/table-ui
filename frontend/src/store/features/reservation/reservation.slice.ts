@@ -12,6 +12,7 @@ const initialState: ReservationSliceInterface = {
   page: 0,
   reservations: [],
   loading: false,
+  creatingUser: false,
 };
 
 const reservationSlice = createSlice({
@@ -25,13 +26,13 @@ const reservationSlice = createSlice({
           variant: "success",
           message: "Reservation created success",
         });
-        state.loading = false;
+        state.creatingUser = false;
       },
       pending(state, _) {
-        state.loading = true;
+        state.creatingUser = true;
       },
       rejected(state, _) {
-        state.loading = false;
+        state.creatingUser = false;
         enqueueSnackbar({
           variant: "error",
           message: "Reservation creation failed",

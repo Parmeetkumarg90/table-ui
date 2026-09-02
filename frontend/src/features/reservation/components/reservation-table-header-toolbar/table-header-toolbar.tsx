@@ -6,23 +6,29 @@ import MenuItem from "@mui/material/MenuItem";
 import styles from "./styles.module.css";
 import { UserCategory } from "@/features/reservation/enum/user-category";
 import { ReservationEnhancedTableToolbarProps } from "../../types/reservation.types";
+import { getDebounce } from "@/utils/optimizers";
 
 function ReservationEnhancedTableToolbar(
   props: ReservationEnhancedTableToolbarProps,
 ) {
-  const { onOptionSelect, onSearch } = props;
+  const { onOptionSelect, onSearch, selectedOptions } = props;
 
-  const onOptionChange = (e: SelectChangeEvent<string[]>) => {
-    const refinedCategories = (e.target.value as UserCategory[]).filter(
-      (value) => !!value,
-    );
-    onOptionSelect(refinedCategories);
-    e.target.value = refinedCategories.length === 0 ? [""] : refinedCategories;
-  };
+  const debouncingOnOptionChange = getDebounce(
+    (e: SelectChangeEvent<string[]>) => {
+      const refinedCategories = (e.target.value as UserCategory[]).filter(
+        (value) => !!value,
+      );
+      onOptionSelect(refinedCategories);
+      e.target.value =
+        refinedCategories.length === 0 ? [""] : refinedCategories;
+    },
+  );
 
-  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onSearch(e.target.value);
-  };
+  const debouncingOnInputChange = getDebounce(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      onSearch(e.target.value);
+    },
+  );
 
   return (
     <Toolbar className={styles.toolbar}>
@@ -30,13 +36,14 @@ function ReservationEnhancedTableToolbar(
         startAdornment={<SearchIcon />}
         placeholder="Search"
         className={styles.inputField}
-        onChange={onInputChange}
+        onChange={debouncingOnInputChange}
       />
       <Select
         className={styles.select}
         defaultValue={[""]}
+        value={selectedOptions.length > 0 ? selectedOptions : [""]}
         displayEmpty
-        onChange={onOptionChange}
+        onChange={debouncingOnOptionChange}
         multiple
       >
         <MenuItem

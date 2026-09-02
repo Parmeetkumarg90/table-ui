@@ -24,6 +24,20 @@
   height: auto;
 }
 
+.loaderBox,
+.fullHeightLoader {
+  width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10 0;
+}
+
+.fullHeightLoader {
+  height: 80%;
+}
+
 @media (max-width: 768px) {
   .listContainer {
     height: auto;

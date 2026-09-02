@@ -13,4 +13,5 @@ export interface ReservationInterface {
 export interface ReservationEnhancedTableToolbarProps {
   onSearch: (value: string) => void;
   onOptionSelect: (options: UserCategory[]) => void;
+  selectedOptions: UserCategory[] | [];
 }

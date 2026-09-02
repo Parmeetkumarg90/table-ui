@@ -171,8 +171,8 @@ const ReservationListTable = () => {
       hasMore={
         reservationListDetail.reservations.length < reservationListDetail.total
       }
-      loading={reservationListDetail.loading}
       totalLength={reservationListDetail.reservations.length}
+      loading={false}
     >
       <EnhancedTable
         headCells={headCells}
@@ -182,9 +182,15 @@ const ReservationListTable = () => {
           <ReservationEnhancedTableToolbar
             onOptionSelect={onCategoryChange}
             onSearch={onSearch}
+            selectedOptions={
+              reservationListDetail.categories?.length
+                ? reservationListDetail.categories
+                : []
+            }
           />
         }
         showPaginationControl={false}
+        loading={reservationListDetail.loading}
       />
     </InfiniteScrollWrapper>
   ) : (
@@ -196,6 +202,11 @@ const ReservationListTable = () => {
         <ReservationEnhancedTableToolbar
           onOptionSelect={onCategoryChange}
           onSearch={onSearch}
+          selectedOptions={
+            reservationListDetail.categories?.length
+              ? reservationListDetail.categories
+              : []
+          }
         />
       }
       totalRows={reservationListDetail.total}
@@ -203,6 +214,7 @@ const ReservationListTable = () => {
       rowsPerPage={reservationListDetail.limit || 5}
       onPageChange={onPageChange}
       onRowsPerPageChange={onRowsPerPageChange}
+      loading={reservationListDetail.loading}
     />
   );
 };
