@@ -16,7 +16,7 @@ const AppLayoutComponent = ({ children }: { children: ReactNode }) => {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persister}>
-        <SnackbarProvider maxSnack={3}>
+        <SnackbarProvider maxSnack={3} autoHideDuration={2000}>
           <NavbarComponent
             onSideBarToggle={() => setShowSidebar((prev) => !prev)}
           />
