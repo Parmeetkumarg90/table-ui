@@ -11,6 +11,7 @@ import Paper from "@mui/material/Paper";
 import styles from "./styles.module.css";
 import { HeadCell } from "../../types/table";
 import { EnhancedTableHead } from "../table-header/table-header";
+import Tooltip from "@mui/material/Tooltip";
 
 interface EnhancedTableComponentProps<T> {
   headCells: HeadCell<T>[];
@@ -69,11 +70,21 @@ const EnhancedTable = <T,>({
                     key={String(rowKey)}
                     className={index % 2 === 0 ? styles.evenRows : styles.row}
                   >
-                    {headCells.map((headCell) => (
-                      <TableCell key={String(headCell.id)} align="left">
-                        {String(row[headCell.id] ?? "")}
-                      </TableCell>
-                    ))}
+                    {headCells.map((headCell) => {
+                      const cellValue = String(row[headCell.id] ?? "");
+                      const showTooltip = cellValue.length > 6;
+                      return (
+                        <Tooltip
+                          key={String(headCell.id)}
+                          title={showTooltip ? cellValue : ""}
+                        >
+                          <TableCell align="left">
+                            {cellValue.slice(0, 6)}
+                            {showTooltip ? "..." : ""}
+                          </TableCell>
+                        </Tooltip>
+                      );
+                    })}
                   </TableRow>
                 );
               })}
