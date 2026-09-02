@@ -76,6 +76,11 @@ function ReservationEnhancedTableToolbar(
               key={category}
               value={value}
               className={styles.selectOption}
+              sx={{
+                "&.Mui-selected": {
+                  backgroundColor: "transparent",
+                },
+              }}
             >
               {selectedOptionsSet.has(value) ? (
                 <CheckBoxIcon className={styles.selectIcon} />
