@@ -60,7 +60,7 @@ const EnhancedTable = <T,>({
               : styles.autoHeightContainer
           }
         >
-          <Table aria-labelledby="tableTitle">
+          <Table aria-labelledby="tableTitle" className={styles.table}>
             <EnhancedTableHead
               onRequestSort={handleRequestSort}
               headCells={headCells}
@@ -77,17 +77,22 @@ const EnhancedTable = <T,>({
                   >
                     {headCells.map((headCell) => {
                       const cellValue = String(row[headCell.id] ?? "");
-                      const showTooltip = cellValue.length > 6;
                       return (
-                        <Tooltip
+                        <TableCell
                           key={String(headCell.id)}
-                          title={showTooltip ? cellValue : ""}
+                          align="left"
+                          className={styles.cell}
                         >
-                          <TableCell align="left" className={styles.cell}>
-                            {cellValue.slice(0, 6)}
-                            {showTooltip ? "..." : ""}
-                          </TableCell>
-                        </Tooltip>
+                          <Tooltip
+                            title={cellValue.replace(/\b\w/g, (c) =>
+                              c.toUpperCase(),
+                            )}
+                            arrow
+                            placement="top"
+                          >
+                            <span className={styles.cellText}>{cellValue}</span>
+                          </Tooltip>
+                        </TableCell>
                       );
                     })}
                   </TableRow>
@@ -104,7 +109,7 @@ const EnhancedTable = <T,>({
               }
             >
               {loading && <CircularProgress />}
-              {refinedRows.length === 0 && (
+              {!loading && refinedRows.length === 0 && (
                 <Box className={styles.noReservationContainer}>
                   <Image
                     src={"/reservations/no-reservation.png"}

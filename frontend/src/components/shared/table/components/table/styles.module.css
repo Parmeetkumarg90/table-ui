@@ -52,7 +52,6 @@
   padding: 0 8px;
 }
 
-
 .loaderBox,
 .fullHeightLoader {
   width: 100%;
@@ -87,6 +86,25 @@
   }
 }
 
-.cell{
+.table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.cell {
+  width: 120px;
+  max-width: 120px;
+  height: 52px;
+  padding: 8px 16px;
+  box-sizing: border-box;
   text-transform: capitalize;
 }
+
+.cellText {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
