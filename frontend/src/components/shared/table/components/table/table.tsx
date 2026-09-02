@@ -116,7 +116,6 @@ const EnhancedTable = <T,>({
                     alt="No reservations"
                     width={400}
                     height={400}
-                    style={{ width: "auto", height: "auto" }}
                     loading="eager"
                   />
                   <Typography>

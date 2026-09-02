@@ -1,3 +1,4 @@
+import { useState, useEffect, useMemo } from "react";
 import Toolbar from "@mui/material/Toolbar";
 import SearchIcon from "@mui/icons-material/Search";
 import OutlinedInput from "@mui/material/OutlinedInput";
@@ -13,25 +14,33 @@ import CheckBoxIcon from "@mui/icons-material/CheckBox";
 function ReservationEnhancedTableToolbar(
   props: ReservationEnhancedTableToolbarProps,
 ) {
-  const { onOptionSelect, onSearch, selectedOptions } = props;
+  const { onOptionSelect, onSearch, selectedOptions, search = "" } = props;
+  const [searchValue, setSearchValue] = useState(search);
   const selectedOptionsSet = new Set(selectedOptions);
 
-  const debouncingOnOptionChange = getDebounce(
-    (e: SelectChangeEvent<string[]>) => {
-      const value = e.target.value;
-      const categories = typeof value === "string" ? value.split(",") : value;
-      const refinedCategories = (categories as UserCategory[]).filter(
-        (val) => !!val,
-      );
-      onOptionSelect(refinedCategories);
-    },
+  useEffect(() => {
+    setSearchValue(search || "");
+  }, [search]);
+
+  const debouncedSearch = useMemo(
+    () => getDebounce((val: string) => onSearch(val), 500),
+    [onSearch],
   );
 
-  const debouncingOnInputChange = getDebounce(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      onSearch(e.target.value);
-    },
-  );
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchValue(value);
+    debouncedSearch(value);
+  };
+
+  const handleOptionChange = (e: SelectChangeEvent<string[]>) => {
+    const value = e.target.value;
+    const categories = typeof value === "string" ? value.split(",") : value;
+    const refinedCategories = (categories as UserCategory[]).filter(
+      (val) => !!val,
+    );
+    onOptionSelect(refinedCategories);
+  };
 
   return (
     <Toolbar className={styles.toolbar}>
@@ -39,13 +48,14 @@ function ReservationEnhancedTableToolbar(
         startAdornment={<SearchIcon />}
         placeholder="Search"
         className={styles.inputField}
-        onChange={debouncingOnInputChange}
+        onChange={handleInputChange}
+        value={searchValue}
       />
       <Select
         className={styles.select}
         value={selectedOptions}
         displayEmpty
-        onChange={debouncingOnOptionChange}
+        onChange={handleOptionChange}
         multiple
         renderValue={(selected) => {
           if (!selected || selected.length === 0) {

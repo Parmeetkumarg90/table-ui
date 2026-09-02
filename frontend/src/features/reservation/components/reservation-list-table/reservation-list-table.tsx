@@ -1,71 +1,118 @@
 "use client";
 import { EnhancedTable } from "@/components/shared/table/components/table/table";
 import { HeadCell, Order } from "@/components/shared/table/types/table";
-import { listReservationService } from "@/store/features/reservation/reservation.service";
-import {
-  ListReservationPayloadInterface,
-  SortField,
-} from "@/store/features/reservation/reservation.types";
-import { useAppDispatch } from "@/store/hook/store";
-import { RootState } from "@/store/store";
-import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { SortField } from "@/store/features/reservation/reservation.types";
 import { ReservationInterface } from "../../types/reservation.types";
 import { UserCategory } from "../../enum/user-category";
 import { ReservationEnhancedTableToolbar } from "../reservation-table-header-toolbar/table-header-toolbar";
 import { InfiniteScrollWrapper } from "@/components/shared/infinite-scroll/infinite-scroll";
 import { useWindowDimension } from "@/features/window/hook/use-dimension";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
+import { fetchReservationsApi } from "@/store/features/reservation/reservation.action";
 
-const ReservationListTable = () => {
-  const reservationListDetail = useSelector(
-    (state: RootState) => state.reservation,
-  );
-  const dispatch = useAppDispatch();
+interface ReservationListTableProps {
+  initialReservations: ReservationInterface[];
+  total: number;
+  page: number;
+  limit: number;
+  search: string;
+  categories: UserCategory[];
+  sortField?: SortField;
+  sortOrder?: Order;
+}
+
+const ReservationListTable = ({
+  initialReservations,
+  total,
+  page,
+  limit,
+  search,
+  categories,
+  sortField,
+  sortOrder,
+}: ReservationListTableProps) => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { windowWidth } = useWindowDimension();
   const doInfiniteScroll = windowWidth < 768;
 
+  const [infiniteReservations, setInfiniteReservations] =
+    useState<ReservationInterface[]>(initialReservations);
+
   useEffect(() => {
-    if (
-      reservationListDetail.reservations.length === 0 &&
-      reservationListDetail.page === 0
-    ) {
-      const { reservations, total, loading, ...previousFilters } =
-        reservationListDetail;
-      dispatch(
-        listReservationService({
-          ...previousFilters,
-          limit: reservationListDetail.limit || 10,
-          page: 1,
-        }),
-      );
-    }
-  }, [reservationListDetail.reservations.length, reservationListDetail.page]);
+    setInfiniteReservations(initialReservations);
+  }, [initialReservations]);
+
+  const updateQuery = (
+    updates: Record<string, string | number | undefined | null>,
+  ) => {
+    const params = new URLSearchParams(searchParams.toString());
+    Object.entries(updates).forEach(([key, value]) => {
+      if (value === undefined || value === null || value === "") {
+        params.delete(key);
+      } else {
+        params.set(key, String(value));
+      }
+    });
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
 
   const onPageChange = (newPage: number) => {
-    if (reservationListDetail.loading) {
-      return;
-    }
-    const { reservations, total, loading, ...previousFilters } =
-      reservationListDetail;
-    dispatch(
-      listReservationService({
-        ...previousFilters,
-        limit: reservationListDetail.limit,
-        page: newPage,
-      }),
-    );
+    updateQuery({ page: newPage });
   };
 
   const onRowsPerPageChange = (newLimit: number) => {
-    const { reservations, total, loading, ...previousFilters } =
-      reservationListDetail;
-    dispatch(
-      listReservationService({
-        ...previousFilters,
-        limit: newLimit,
-        page: 1,
-      }),
-    );
+    updateQuery({ limit: newLimit, page: 1 });
+  };
+
+  const onSearch = (value: string) => {
+    if (search.trim() === value.trim()) return;
+    updateQuery({ search: value.trim() || undefined, page: 1 });
+  };
+
+  const onCategoryChange = (newCategories: UserCategory[]) => {
+    updateQuery({
+      categories:
+        newCategories.length > 0 ? newCategories.join(",") : undefined,
+      page: 1,
+    });
+  };
+
+  const handleRequestSort = (fieldname: keyof ReservationInterface) => {
+    const isCurrentField = sortField === fieldname;
+    let nextOrder: Order | undefined;
+
+    if (!isCurrentField || !sortOrder) {
+      nextOrder = "asc";
+    } else if (sortOrder === "asc") {
+      nextOrder = "desc";
+    } else {
+      nextOrder = undefined;
+    }
+
+    updateQuery({
+      sortField: nextOrder ? (fieldname as string) : undefined,
+      sortOrder: nextOrder,
+      page: 1,
+    });
+  };
+
+  const fetchMore = async () => {
+    if (infiniteReservations.length >= total) return;
+    const nextPage = Math.floor(infiniteReservations.length / limit) + 1;
+    const sort =
+      sortField && sortOrder ? { [sortField]: sortOrder } : undefined;
+
+    const data = await fetchReservationsApi({
+      page: nextPage,
+      limit,
+      search: search || undefined,
+      categories: categories.length > 0 ? categories : undefined,
+      sort,
+    });
+    setInfiniteReservations((prev) => [...prev, ...(data.reservations ?? [])]);
   };
 
   const columnFields: (keyof ReservationInterface)[] = [
@@ -83,99 +130,26 @@ const ReservationListTable = () => {
       label: fieldname
         .replace(/_/g, " ")
         .replace(/\b\w/g, (char) => char.toUpperCase()),
-      order:
-        (reservationListDetail.sort?.[fieldname as SortField] as Order) ??
-        undefined,
+      order: sortField === fieldname ? sortOrder : undefined,
       canSort: !(fieldname.endsWith("at") || fieldname.endsWith("ategory")),
     }),
   );
 
-  const rows = (reservationListDetail.reservations ?? []).map(
-    (reservation) => ({
-      ...reservation,
-      created_at: new Date(reservation.created_at).toLocaleString(),
-      updated_at: new Date(reservation.updated_at).toLocaleString(),
-    }),
-  );
+  const displayReservations = doInfiniteScroll
+    ? infiniteReservations
+    : initialReservations;
 
-  const handleRequestSort = (fieldname: keyof ReservationInterface) => {
-    const { reservations, total, loading, ...previousFilters } =
-      reservationListDetail;
-
-    const currentSorting = previousFilters.sort?.[fieldname as SortField];
-
-    let sort = {
-      ...previousFilters.sort,
-    };
-
-    if (currentSorting === undefined) {
-      sort[fieldname as SortField] = "asc";
-    } else if (currentSorting === "asc") {
-      sort[fieldname as SortField] = "desc";
-    } else {
-      delete sort[fieldname as SortField];
-    }
-
-    const filter: ListReservationPayloadInterface = {
-      ...previousFilters,
-      sort,
-    };
-    dispatch(listReservationService(filter));
-  };
-
-  const onSearch = (value: string) => {
-    const { reservations, total, loading, ...previousFilters } =
-      reservationListDetail;
-    if ((previousFilters.search?.trim() ?? "") === value.trim()) {
-      return;
-    }
-
-    const filter: ListReservationPayloadInterface = {
-      ...previousFilters,
-      search: value || undefined,
-      page: 1,
-    };
-
-    dispatch(listReservationService(filter));
-  };
-
-  const onCategoryChange = (categories: UserCategory[]) => {
-    const { reservations, total, loading, ...previousFilters } =
-      reservationListDetail;
-    const filter: ListReservationPayloadInterface = {
-      ...previousFilters,
-      categories,
-      page: 1,
-    };
-
-    dispatch(listReservationService(filter));
-  };
-
-  const fetchMore = () => {
-    if (
-      reservationListDetail.loading ||
-      reservationListDetail.reservations.length >= reservationListDetail.total
-    ) {
-      return;
-    }
-    const { reservations, total, loading, ...previousFilters } =
-      reservationListDetail;
-    dispatch(
-      listReservationService({
-        ...previousFilters,
-        limit: reservationListDetail.limit || 10,
-        page: reservationListDetail.page + 1,
-      }),
-    );
-  };
+  const rows = displayReservations.map((reservation) => ({
+    ...reservation,
+    created_at: new Date(reservation.created_at).toLocaleString(),
+    updated_at: new Date(reservation.updated_at).toLocaleString(),
+  }));
 
   return doInfiniteScroll ? (
     <InfiniteScrollWrapper
       fetchMore={fetchMore}
-      hasMore={
-        reservationListDetail.reservations.length < reservationListDetail.total
-      }
-      totalLength={reservationListDetail.reservations.length}
+      hasMore={infiniteReservations.length < total}
+      totalLength={infiniteReservations.length}
       loading={false}
     >
       <EnhancedTable
@@ -186,15 +160,12 @@ const ReservationListTable = () => {
           <ReservationEnhancedTableToolbar
             onOptionSelect={onCategoryChange}
             onSearch={onSearch}
-            selectedOptions={
-              reservationListDetail.categories?.length
-                ? reservationListDetail.categories
-                : []
-            }
+            selectedOptions={categories}
+            search={search}
           />
         }
         showPaginationControl={false}
-        loading={reservationListDetail.loading}
+        loading={false}
       />
     </InfiniteScrollWrapper>
   ) : (
@@ -206,19 +177,16 @@ const ReservationListTable = () => {
         <ReservationEnhancedTableToolbar
           onOptionSelect={onCategoryChange}
           onSearch={onSearch}
-          selectedOptions={
-            reservationListDetail.categories?.length
-              ? reservationListDetail.categories
-              : []
-          }
+          selectedOptions={categories}
+          search={search}
         />
       }
-      totalRows={reservationListDetail.total}
-      page={Math.max(0, reservationListDetail.page - 1)}
-      rowsPerPage={reservationListDetail.limit || 10}
+      totalRows={total}
+      page={Math.max(0, page - 1)}
+      rowsPerPage={limit}
       onPageChange={onPageChange}
       onRowsPerPageChange={onRowsPerPageChange}
-      loading={reservationListDetail.loading}
+      loading={false}
     />
   );
 };

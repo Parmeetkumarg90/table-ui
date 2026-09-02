@@ -14,4 +14,5 @@ export interface ReservationEnhancedTableToolbarProps {
   onSearch: (value: string) => void;
   onOptionSelect: (options: UserCategory[]) => void;
   selectedOptions: UserCategory[] | [];
+  search: string;
 }
