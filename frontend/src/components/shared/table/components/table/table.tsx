@@ -114,8 +114,10 @@ const EnhancedTable = <T,>({
                   <Image
                     src={"/reservations/no-reservation.png"}
                     alt="No reservations"
-                    width={`${400}`}
-                    height={`${400}`}
+                    width={400}
+                    height={400}
+                    style={{ width: "auto", height: "auto" }}
+                    loading="eager"
                   />
                   <Typography>
                     No results found. Try changing your filters.

@@ -16,3 +16,11 @@ services:
       - "8001:8001"
     volumes:
       - .:/app
+    networks:
+      - table
+
+networks:
+  table:
+    name: table-network
+    external: true
+
