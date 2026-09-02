@@ -123,7 +123,7 @@ const EnhancedTable = <T,>({
         {showPaginationControl && (
           <TablePagination
             className={styles.pagination}
-            rowsPerPageOptions={[5, 10, 25]}
+            rowsPerPageOptions={[10, 20, 30]}
             component="div"
             count={totalRows ?? 0}
             rowsPerPage={rowsPerPage ?? 0}

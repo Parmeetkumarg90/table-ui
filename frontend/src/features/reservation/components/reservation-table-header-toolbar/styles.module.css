@@ -54,9 +54,23 @@
 }
 
 .selectOption {
-  width: 184px;
+  width: 171px;
+  height: 38px;
   font-size: 14px;
+  padding: 10px 0;
+  padding-left: 8px;
+  padding-right: 16px;
   text-transform: capitalize;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #424242;
+}
+
+.selectIcon {
+  width: 20px;
+  height: 20px;
+  color: #424242;
 }
 
 .select :global(.MuiOutlinedInput-notchedOutline) {

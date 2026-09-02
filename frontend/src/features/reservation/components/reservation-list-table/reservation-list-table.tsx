@@ -34,7 +34,7 @@ const ReservationListTable = () => {
       dispatch(
         listReservationService({
           ...previousFilters,
-          limit: reservationListDetail.limit || 5,
+          limit: reservationListDetail.limit || 10,
           page: 1,
         }),
       );
@@ -215,7 +215,7 @@ const ReservationListTable = () => {
       }
       totalRows={reservationListDetail.total}
       page={Math.max(0, reservationListDetail.page - 1)}
-      rowsPerPage={reservationListDetail.limit || 5}
+      rowsPerPage={reservationListDetail.limit || 10}
       onPageChange={onPageChange}
       onRowsPerPageChange={onRowsPerPageChange}
       loading={reservationListDetail.loading}

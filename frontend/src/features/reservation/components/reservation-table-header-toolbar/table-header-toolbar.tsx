@@ -68,9 +68,9 @@ function ReservationEnhancedTableToolbar(
               className={styles.selectOption}
             >
               {selectedOptionsSet.has(value) ? (
-                <CheckBoxIcon />
+                <CheckBoxIcon className={styles.selectIcon} />
               ) : (
-                <CheckBoxOutlineBlankIcon />
+                <CheckBoxOutlineBlankIcon className={styles.selectIcon} />
               )}
               {value}
             </MenuItem>
